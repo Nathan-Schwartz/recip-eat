@@ -29,11 +29,9 @@ recipes.searchRecipePuppy = function(options, ingredients, category, callback){
 
   //filter if needed
   .then(function(recipes){
-    if(options && options.filter === "thumbnail")
-      return recipes.filter(byThumbNail);
-
-    else
-      return recipes;
+    return (options && options.filter === "thumbnail")
+      ? recipes.filter(byThumbNail)
+      : recipes;
   })
 
   //give recipes back
