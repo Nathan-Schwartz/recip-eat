@@ -1,5 +1,7 @@
 var request = require('request');
+var qs = require('query-string');
 var Promise = require('bluebird');
+var authToken = require('./authentication');
 
 var recipes = module.exports;
 
@@ -45,7 +47,7 @@ recipes.searchRecipePuppy = function(options, ingredients, category, callback){
   //get all relevant recipes on the specified page
   function sendRequest(pageNum){
     return new Promise(function(resolve,reject){
-      request('http://www.recipepuppy.com/api/?i=' + String(ingredients) + '&q=' + String(category) + '&p=' + String(pageNum), function (error, response, body){
+      request('http://www.recipepuppy.com/api/?i=' + queryify(ingredients) + '&q=' + queryify(category) + '&p=' + queryify(pageNum), function (error, response, body){
         if(error || response.statusCode !== 200)
           reject(error);
         else
@@ -66,15 +68,6 @@ recipes.searchFood2Fork = function(options, ingredients, callback){
     return JSON.parse(body);
   })
 
-  // //filter if needed
-  // .then(function(recipes){
-  //   if(options && options.filter === "thumbnail")
-  //     return recipes.filter(byThumbNail);
-
-  //   else
-  //     return recipes;
-  // })
-
   //give recipes back
   .then(function(recipes){
     callback(recipes);
@@ -86,7 +79,7 @@ recipes.searchFood2Fork = function(options, ingredients, callback){
   //get all relevant recipes on the specified page
   function sendRequest(pageNum){
     return new Promise(function(resolve,reject){
-      request("http://food2fork.com/api/search?key=d4650ccd9d1218b3977c82811f4772ef&q=" + String(ingredients) + "&sort=r&page=" + String(pageNum), function (error, response, body){
+      request("http://food2fork.com/api/search?key=" + authToken + "&q=" + queryify(ingredients) + "&sort=r&page=" + queryify(pageNum), function (error, response, body){
         if(error || response.statusCode !== 200)
           reject(error);
         else
@@ -94,6 +87,10 @@ recipes.searchFood2Fork = function(options, ingredients, callback){
       })
     })
   }
+}
+
+function queryify(val){
+  return String(val).replace(/ /g,"%20");
 }
 
 function byThumbNail(current) {

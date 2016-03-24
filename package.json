@@ -8,6 +8,8 @@
     "body-parser": "^1.15.0",
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
+    "query-string": "^3.0.3",
+    "querystring": "^0.2.0",
     "request": "^2.69.0"
   },
   "devDependencies": {},
