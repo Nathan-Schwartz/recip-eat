@@ -3,8 +3,10 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var queryString = require('query-string');
 var Promise = require('bluebird');
-var recipes = require('./recipes');
 var express = require('express');
+var fs = require('fs');
+
+var recipes = require('./recipes');
 
 var app = express();
 var ROOT_DIRECTORY = __dirname.slice(0,__dirname.indexOf('/server'));
@@ -16,7 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.get('/', function(req,res){
- res.send();
+ // res.set('Content-Type', 'text/html');
+  res.send();
 });
 
 app.post('/searchRecipePuppy', function(req, res) {
@@ -42,23 +45,43 @@ app.post('/searchFood2Fork', function(req, res) {
   });
 });
 
-app.post('/users/create', function(req, res) {
-}
 
-app.post('/users/delete', function(req, res) {
-}
+// app.post('/login', function(req, res) {
+//   res.send();
+// });
 
-app.post('/users/update', function(req, res) {
-}
+// app.post('/logout', function(req, res) {
+//   res.send();
+// });
 
-app.post('/recipe/create', function(req, res) {
-}
+// app.post('/users/create', function(req, res) {
+//   res.send();
+// });
 
-app.post('/recipe/like', function(req, res) {
-}
+// app.post('/users/delete', function(req, res) {
+//   res.send();
+// });
 
-app.post('/recipe/save', function(req, res) {
-}
+// app.post('/recipe/like', function(req, res) {
+//   res.send();
+// });
+
+
+
+
+
+// app.post('/users/update', function(req, res) {
+  // res.send();
+// });
+
+// app.post('/recipe/create', function(req, res) {
+  // res.send();
+// });
+
+
+// app.post('/recipe/save', function(req, res) {
+  // res.send();
+// });
 
 
 app.listen(1337);
