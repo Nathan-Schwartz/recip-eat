@@ -1,13 +1,14 @@
+var express      = require('express');
 var request      = require('request');
 var path         = require('path');
 var bodyParser   = require('body-parser');
 var cookieParser = require('cookie-parser');
 var queryString  = require('query-string');
 var Promise      = require('bluebird');
-var express      = require('express');
 var passport     = require('passport');
 var GithubStrat  = require('passport-github2').Strategy;
 var fs           = require('fs');
+
 
 var authToken    = require('./authentication');
 var recipes      = require('./recipes');
@@ -86,13 +87,6 @@ app.post('/searchFood2Fork', function(req, res) {
 });
 
 
-// app.post('/login', function(req, res) {
-//   res.send();
-// });
-
-// app.post('/logout', function(req, res) {
-//   res.send();
-// });
 
 // app.post('/users/create', function(req, res) {
 //   res.send();

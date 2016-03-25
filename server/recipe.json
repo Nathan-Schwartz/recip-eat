@@ -1,3 +1,7 @@
+
+//use bcrypt to generate a hash for the user's github profile id,
+//then encrypt the href of recipepuppy recipes or the source_url of f2f recipes
+
 {
    "title":"Recipe Puppy",
    "version":0.1,

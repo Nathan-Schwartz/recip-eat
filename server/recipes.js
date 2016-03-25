@@ -1,6 +1,7 @@
-var request = require('request');
-var qs = require('query-string');
-var Promise = require('bluebird');
+var request   = require('request');
+var qs        = require('query-string');
+var Promise   = require('bluebird');
+
 var authToken = require('./authentication');
 
 var recipes = module.exports;
