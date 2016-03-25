@@ -9,9 +9,8 @@
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
     "passport": "^0.3.2",
-    "passport-github": "^1.1.0",
+    "passport-github2": "^0.1.10",
     "query-string": "^3.0.3",
-    "querystring": "^0.2.0",
     "request": "^2.69.0"
   },
   "devDependencies": {},

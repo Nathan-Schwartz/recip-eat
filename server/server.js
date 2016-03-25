@@ -4,6 +4,8 @@ var cookieParser = require('cookie-parser');
 var queryString = require('query-string');
 var Promise = require('bluebird');
 var express = require('express');
+var passport = require('passport');
+var GitHubStrategy = require('passport-github2').Strategy;
 var fs = require('fs');
 
 var recipes = require('./recipes');
@@ -17,8 +19,42 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
+/*----------------START Untested----------------*/
+
+  app.use(passport.initialize());
+  app.use(passport.session()); //have to use express.session first
+
+  passport.use(new GitHubStrategy({
+      clientID: "8562d9e68b5f5333368a",
+      clientSecret: "d6e017588fcb4f4773fff23fdc164d746eff9a77",
+      callbackURL: "http://localhost:1337/auth/callback"
+    },
+    function(accessToken, refreshToken, profile, done) {
+      User.findOrCreate({ githubId: profile.id }, function (err, user) {
+        return done(err, user);
+      });
+    }
+  ));
+
+
+  app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+  app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+
+/*----------------END Untested----------------*/
+
+
+
+
+
+
+
+
+
 app.get('/', function(req,res){
- // res.set('Content-Type', 'text/html');
   res.send();
 });
 
@@ -86,3 +122,5 @@ app.post('/searchFood2Fork', function(req, res) {
 
 app.listen(1337);
 console.log("App is listening");
+
+
