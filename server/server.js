@@ -1,19 +1,20 @@
-var request = require('request');
-var bodyParser = require('body-parser');
+var request      = require('request');
+var path         = require('path');
+var bodyParser   = require('body-parser');
 var cookieParser = require('cookie-parser');
-var queryString = require('query-string');
-var Promise = require('bluebird');
-var express = require('express');
-var passport = require('passport');
-var GitHubStrategy = require('passport-github2').Strategy;
-var fs = require('fs');
+var queryString  = require('query-string');
+var Promise      = require('bluebird');
+var express      = require('express');
+var passport     = require('passport');
+var GithubStrat  = require('passport-github2').Strategy;
+var fs           = require('fs');
 
+var authToken = require('./authentication');
 var recipes = require('./recipes');
 
 var app = express();
-var ROOT_DIRECTORY = __dirname.slice(0,__dirname.indexOf('/server'));
 
-app.use(express.static( ROOT_DIRECTORY + '/client/public' ));
+app.use(express.static( path.join(__dirname + '/..') + '/client/public'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,17 +25,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
   app.use(passport.initialize());
   app.use(passport.session()); //have to use express.session first
 
-  passport.use(new GitHubStrategy({
-      clientID: "8562d9e68b5f5333368a",
-      clientSecret: "d6e017588fcb4f4773fff23fdc164d746eff9a77",
+  passport.use(new GithubStrat({
+      clientID: authToken.githubClientId,
+      clientSecret: authToken.gitHubClientSecret,
       callbackURL: "http://localhost:1337/auth/callback"
     },
     function(accessToken, refreshToken, profile, done) {
-      User.findOrCreate({ githubId: profile.id }, function (err, user) {
-        return done(err, user);
-      });
-    }
-  ));
+      console.log("profile", profile);
+      done(profile);
+      // User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      //   return done(err, user);
+      // });
+    })
+  );
 
 
   app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
@@ -122,5 +125,3 @@ app.post('/searchFood2Fork', function(req, res) {
 
 app.listen(1337);
 console.log("App is listening");
-
-

@@ -77,7 +77,7 @@ recipes.searchFood2Fork = function(options, ingredients, callback){
   //get all relevant recipes on the specified page
   function sendRequest(pageNum){
     return new Promise(function(resolve,reject){
-      request("http://food2fork.com/api/search?key=" + authToken + "&q=" + queryify(ingredients) + "&sort=r&page=" + queryify(pageNum), function (error, response, body){
+      request("http://food2fork.com/api/search?key=" + authToken.Food2Plate + "&q=" + queryify(ingredients) + "&sort=r&page=" + queryify(pageNum), function (error, response, body){
         if(error || response.statusCode !== 200)
           reject(error);
         else
