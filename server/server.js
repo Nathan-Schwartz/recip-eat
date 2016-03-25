@@ -9,15 +9,15 @@ var passport     = require('passport');
 var GithubStrat  = require('passport-github2').Strategy;
 var fs           = require('fs');
 
-var authToken = require('./authentication');
-var recipes = require('./recipes');
+var authToken    = require('./authentication');
+var recipes      = require('./recipes');
 
 var app = express();
 
-app.use(express.static( path.join(__dirname + '/..') + '/client/public'));
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use( express.static( path.join(__dirname + '/..') + '/client/public'));
+app.use( cookieParser() );
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded({ extended: true }) );
 
 
 
@@ -56,19 +56,7 @@ passport.use(new GithubStrat({
 
 app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
 
-app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
-  // Successful authentication, redirect home.
-  res.redirect('/');
-});
-
-
-
-
-
-
-
-
-
+app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }));
 
 app.get('/', function(req,res){
   res.send();
