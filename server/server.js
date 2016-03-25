@@ -20,34 +20,47 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-/*----------------START Untested----------------*/
-
-  app.use(passport.initialize());
-  app.use(passport.session()); //have to use express.session first
-
-  passport.use(new GithubStrat({
-      clientID: authToken.githubClientId,
-      clientSecret: authToken.gitHubClientSecret,
-      callbackURL: "http://localhost:1337/auth/callback"
-    },
-    function(accessToken, refreshToken, profile, done) {
-      console.log("profile", profile);
-      done(profile);
-      // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      //   return done(err, user);
-      // });
-    })
-  );
 
 
-  app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
+app.use(passport.initialize());
+app.use(passport.session());
+var thisUser;
 
-  app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
 
-/*----------------END Untested----------------*/
+passport.serializeUser(function(user, done) {
+  thisUser = user;
+  done(null, 1);
+});
+
+passport.deserializeUser(function(id, done) {
+ // User.findById(id, function(err, user) {
+    done(err, thisUser);
+ // });
+});
+
+
+passport.use(new GithubStrat({
+    clientID: authToken.githubClientId,
+    clientSecret: authToken.gitHubClientSecret,
+    callbackURL: "http://localhost:1337/auth/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log("profile", profile);
+    done(null, profile);
+    // User.findOrCreate({ githubId: profile.id }, function (err, user) {
+    //   return done(err, user);
+    // });
+  })
+);
+
+
+app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
+  // Successful authentication, redirect home.
+  res.redirect('/');
+});
+
 
 
 
