@@ -17,26 +17,56 @@ app.use( cookieParser() );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
 
-db.write("sup people")
-db.read().then(function(res){console.log(res)})
 
+
+db.write({ testing: 1, "2": [3] });
+db.read()
+.then(function(res){
+  console.log("test read & write", res, res.testing)
+})
+db.findById("testing")
+.then(function(res){
+  console.log("test find by id", res);
+})
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 /********************** START needs Database *************************/
 
-var thisUser;
+// var thisUser;
+
+// passport.serializeUser(function(user, done) {
+//   thisUser = user;
+//   done(null, 1);
+// });
+
+// passport.deserializeUser(function(id, done) {
+//   done(err, thisUser);
+// });
+
 
 passport.serializeUser(function(user, done) {
-  thisUser = user;
-  done(null, 1);
+  db.read()
+  .then(function(data){
+    data.thisUser = data.thisUser || [];
+    return db.write(data);
+  })
+  .then(function(data){
+    done(null, user.id);
+  })
 });
 
 passport.deserializeUser(function(id, done) {
- // User.findById(id, function(err, user) {
-    done(err, thisUser);
- // });
+  db.findById(id)
+  .then(function(thisUser){
+    if(thisUser !== -1)
+      return done(null, thisUser);
+    throw new Error("Passport wanted a user that didn't exist");
+  })
+  .catch(function(err){
+    return done(err, null);
+  })
 });
 
 /**************************END needs Database****************************/

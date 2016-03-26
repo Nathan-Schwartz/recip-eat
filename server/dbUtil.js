@@ -9,7 +9,7 @@ var util = module.exports;
 util.read = function() {
   return readFile('./server/db.js')
   .then(function(data){
-  	return String(data);
+  	return JSON.parse(String(data));
   })
   .catch(function(err){
   	if(err instanceof Error) {
@@ -19,7 +19,20 @@ util.read = function() {
   })
 }
 
+util.findById = function(id) {
+  return util.read()
+  .then(function(text){
+    return (text[id] !== undefined)
+     ? text[id]
+     : -1;
+  })
+}
+
+
 util.write = function(dataText) {
+  if(typeof dataText !== "string")
+    dataText = JSON.stringify(dataText);
+
   return writeFile('./server/db.js', dataText)
   .catch(function(err){
   	if(err instanceof Error) {
