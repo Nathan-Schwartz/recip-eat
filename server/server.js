@@ -18,16 +18,28 @@ app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
 
 
-
-db.write({ testing: 1, "2": [3] });
-db.read()
-.then(function(res){
-  console.log("test read & write", res, res.testing)
-})
-db.findById("testing")
-.then(function(res){
-  console.log("test find by id", res);
-})
+// ///basic db method testing
+// db.write({ testing: 1, "2": [3] });
+// db.read()
+// .then(function(res){
+//   console.log("test read & write", res, res.testing)
+//   return db.findById("testing");
+// })
+// .then(function(res){
+//   console.log("test find by id on existing", res);
+//   return db.findById("didntexist")
+// })
+// .then(function(res){
+//   console.log("test find by id on non-existant", res);
+//   return db.findOrCreate("didntexist")
+// })
+// .then(function(res){
+//   console.log("test findOrCreate on non-existant", res);
+//   return db.findById("didntexist")
+// })
+// .then(function(res){
+//   console.log("test find by id on newly existing", res);
+// })
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -49,11 +61,11 @@ app.use(passport.session());
 passport.serializeUser(function(user, done) {
   db.read()
   .then(function(data){
-    data.thisUser = data.thisUser || [];
+    data.thisUser = data.thisUser || [];// !!! just in case, but could swallow errors
     return db.write(data);
   })
   .then(function(data){
-    done(null, user.id);
+    return done(null, user.id);
   })
 });
 
@@ -77,11 +89,11 @@ passport.use(new GithubStrat({
     callbackURL: "http://localhost:1337/auth/callback"
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log("profile", profile);
-    done(null, profile);
     // User.findOrCreate({ githubId: profile.id }, function (err, user) {
     //   return done(err, user);
     // });
+    console.log("profile", Object.keys(profile));
+    return done(null, profile);
   })
 );
 
