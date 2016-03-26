@@ -44,26 +44,9 @@ app.use( bodyParser.urlencoded({ extended: true }) );
 app.use(passport.initialize());
 app.use(passport.session());
 
-/********************** START needs Database *************************/
-
-// var thisUser;
-
-// passport.serializeUser(function(user, done) {
-//   thisUser = user;
-//   done(null, 1);
-// });
-
-// passport.deserializeUser(function(id, done) {
-//   done(err, thisUser);
-// });
-
 
 passport.serializeUser(function(user, done) {
   db.read()
-  .then(function(data){
-    data.thisUser = data.thisUser || [];// !!! just in case, but could swallow errors
-    return db.write(data);
-  })
   .then(function(data){
     return done(null, user.id);
   })
@@ -81,7 +64,6 @@ passport.deserializeUser(function(id, done) {
   })
 });
 
-/**************************END needs Database****************************/
 
 passport.use(new GithubStrat({
     clientID: authToken.githubClientId,
@@ -89,11 +71,14 @@ passport.use(new GithubStrat({
     callbackURL: "http://localhost:1337/auth/callback"
   },
   function(accessToken, refreshToken, profile, done) {
-    // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-    //   return done(err, user);
-    // });
+    db.findOrCreate(profile.id)
+    .then(function(){
+      return done(null, profile);
+    })
+    .catch(function(err){
+      return done(err, null);
+    })
     console.log("profile", Object.keys(profile));
-    return done(null, profile);
   })
 );
 
@@ -132,11 +117,6 @@ app.post('/searchFood2Fork', function(req, res) {
 
 // app.post('/recipe/like', function(req, res) {
 //   res.send();
-// });
-
-
-// app.post('/recipe/save', function(req, res) {
-  // res.send();
 // });
 
 
