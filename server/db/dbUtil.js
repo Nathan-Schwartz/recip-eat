@@ -14,15 +14,20 @@ var util = module.exports;
   //read
   //findById (can do findOrCreate as well)
 
+//write a duplicate removal function?
+
 
 util.updateCounter = function(number){
-  if(typeof number !== "number")
-    throw new Error("updateCounter expected a number");
+  if(typeof number !== "number" || arguments.length > 1)
+    throw new Error("util.updateCounter expected a number (1 argument)");
 
-  util.read()
+  return util.read()
   .then(function(res){
     res["_RECIPE_ID_COUNTER"] = number;
     return util.write(res);
+  })
+  .then(function(){
+    return number;
   })
   .catch(function(err){
     console.log("Problems in addById", err);
@@ -30,6 +35,9 @@ util.updateCounter = function(number){
 }
 
 util.write = function(dataText) {
+  if(arguments.length > 1)
+    throw new Error("util.write expects 1 argument");
+
   if(typeof dataText !== "string")
     dataText = JSON.stringify(dataText);
 
@@ -56,10 +64,14 @@ util.read = function() {
 }
 
 util.addById = function(id, newData) {
+  if(typeof id !== "string" || arguments.length > 2)
+    throw new Error("util.addById expects the first argument to be a string, and there should only be two arguments");
 
-  util.read()
+  return util.read()
   .then(function(res){
-    res[id].push(newData);
+    if(Array.isArray(newData)) res[id].push(...newData);
+    else res[id].push(newData);
+
     return util.write(res);
   })
   .catch(function(err){
@@ -68,6 +80,8 @@ util.addById = function(id, newData) {
 }
 
 util.findById = function(options, id) {
+  if(typeof id !== "string" || typeof options !== "object" || arguments.length > 2)
+    throw new Error("util.addById expects the first argument to be a string, second to be an object, and there should only be two arguments");
 
   return util.read()
   .then(function(data){

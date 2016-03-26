@@ -13,7 +13,6 @@ recipes.searchRecipePuppy = function(options, ingredients, category){
   if(typeof ingredients !== "string" || typeof category !== "string" || (typeof options !== "object" && options !== undefined))
     throw new Error("recipes.searchRecipePuppy expects 1 options object, 2 strings, and 1 callback (respectively)");
 
-addId();
   var allRecipes = [];
 
   return sendRequest(1)
@@ -41,7 +40,6 @@ addId();
   .then(function(recipes){
     return recipes;
   })
-    return recipes;
   .catch(function(error){
     console.log("One of the page requests went poorly in searchRecipePuppy =>", error);
   })
@@ -99,9 +97,15 @@ function addId(recipeObj) {
   return db.findById({}, "_RECIPE_ID_COUNTER")
   .then(function(RecCounter){
     console.log("Got recipe ID counter:", RecCounter);
-    for(var i=0, length=recipeObj.results.length; i<length; i++){
-      recipeObj.results[i].id = RecCounter++;
+    for(var i=0, length=recipeObj.length; i<length; i++){
+      recipeObj[i].id = RecCounter++;
     }
-    return db.write(recipeObj.results);
+    return db.updateCounter(RecCounter);
+  })
+  .then(function(){
+    return db.addById("_ALL_RECIPES", recipeObj)
+  })
+  .then(function(){
+    return recipeObj;
   })
 }
