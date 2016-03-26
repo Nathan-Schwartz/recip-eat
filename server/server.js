@@ -33,7 +33,8 @@ app.post('/searchRecipePuppy', function(req, res) {
   var category = req.body.category || "omelet";
 
   //to filter entries without picture pass in {filter:"thumbnail"} instead of {}
-  recipes.searchRecipePuppy({}, ingredients, category, function(recipes){
+  recipes.searchRecipePuppy({}, ingredients, category)
+  .then(function(recipes){
     console.log("retrieved recipes:",recipes);
     res.send(JSON.stringify(recipes));
   });
@@ -43,7 +44,8 @@ app.post('/searchFood2Fork', function(req, res) {
 
   var ingredients =  req.body.ingredients || "onions";
 
-  recipes.searchFood2Fork({}, ingredients, function(recipes){
+  recipes.searchFood2Fork({}, ingredients)
+  .then(function(recipes){
     console.log("retrieved recipes:",recipes);
     res.send(JSON.stringify(recipes));
   });
@@ -56,7 +58,7 @@ app.post('/searchFood2Fork', function(req, res) {
 
 
 // // basic db method testing
-// db.write({ testing: 1, "2": [3] });
+// db.write({ testing: [1], "2": [3] });
 // db.read()
 // .then(function(res){
 //   console.log("test read & write", res, res.testing)
@@ -75,10 +77,11 @@ app.post('/searchFood2Fork', function(req, res) {
 //   return db.findById({"create": false},"didntexist")
 // })
 // .then(function(res){
-//
+//   console.log("test find by id on newly existing (should be []", res);
+//   return db.addById("testing", 2);
 // })
 // .then(function(res){
-//   console.log("test find by id on newly existing (should be []", res);
+//   console.log("test addById")
 // })
 
 

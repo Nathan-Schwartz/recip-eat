@@ -4,8 +4,7 @@ var passport    = require('passport');
 var authToken = require('./authentication');
 var db        = require('./db/dbUtil');
 
-module.exports = function (app, express) {
-
+module.exports = function(app, express) {
 
   app.use(passport.initialize());
   app.use(passport.session());

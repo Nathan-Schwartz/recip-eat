@@ -8,10 +8,26 @@ var writeFile = Promise.promisify(fs.writeFile);
 var util = module.exports;
 
 //Everything returns promises. Methods are:
+  //updateCounter
   //write
+  //addById
   //read
   //findById (can do findOrCreate as well)
 
+
+util.updateCounter = function(number){
+  if(typeof number !== "number")
+    throw new Error("updateCounter expected a number");
+
+  util.read()
+  .then(function(res){
+    res["_RECIPE_ID_COUNTER"] = number;
+    return util.write(res);
+  })
+  .catch(function(err){
+    console.log("Problems in addById", err);
+  })
+}
 
 util.write = function(dataText) {
   if(typeof dataText !== "string")
@@ -39,15 +55,20 @@ util.read = function() {
   })
 }
 
-util.addById = function(options, id) {
-  findById({create:false}, id)
-  .then(function(data){
-    console.log("Data in addById = ", data);
+util.addById = function(id, newData) {
 
+  util.read()
+  .then(function(res){
+    res[id].push(newData);
+    return util.write(res);
+  })
+  .catch(function(err){
+    console.log("Problems in addById", err);
   })
 }
 
 util.findById = function(options, id) {
+
   return util.read()
   .then(function(data){
     return data[id] !== undefined
@@ -66,8 +87,8 @@ util.findById = function(options, id) {
   .then(function(res){
     if(Array.isArray(res))
       return res;
-    if(res === -1)
-      return -1;
+    if(typeof res === "number")
+      return res;
     else
       return [];
   })
