@@ -1,17 +1,14 @@
 var express      = require('express');
-var request      = require('request');
 var path         = require('path');
 var bodyParser   = require('body-parser');
 var cookieParser = require('cookie-parser');
 var queryString  = require('query-string');
-var Promise      = require('bluebird');
 var passport     = require('passport');
 var GithubStrat  = require('passport-github2').Strategy;
-var fs           = require('fs');
-
 
 var authToken    = require('./authentication');
 var recipes      = require('./recipes');
+var db           = require('./dbUtil');
 
 var app = express();
 
@@ -20,13 +17,16 @@ app.use( cookieParser() );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
 
-
+db.write("sup people")
+db.read().then(function(res){console.log(res)})
 
 
 app.use(passport.initialize());
 app.use(passport.session());
-var thisUser;
 
+/********************** START needs Database *************************/
+
+var thisUser;
 
 passport.serializeUser(function(user, done) {
   thisUser = user;
@@ -39,6 +39,7 @@ passport.deserializeUser(function(id, done) {
  // });
 });
 
+/**************************END needs Database****************************/
 
 passport.use(new GithubStrat({
     clientID: authToken.githubClientId,
@@ -87,29 +88,8 @@ app.post('/searchFood2Fork', function(req, res) {
 });
 
 
-
-// app.post('/users/create', function(req, res) {
-//   res.send();
-// });
-
-// app.post('/users/delete', function(req, res) {
-//   res.send();
-// });
-
 // app.post('/recipe/like', function(req, res) {
 //   res.send();
-// });
-
-
-
-
-
-// app.post('/users/update', function(req, res) {
-  // res.send();
-// });
-
-// app.post('/recipe/create', function(req, res) {
-  // res.send();
 // });
 
 
