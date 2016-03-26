@@ -39,6 +39,14 @@ util.read = function() {
   })
 }
 
+util.addById = function(options, id) {
+  findById({create:false}, id)
+  .then(function(data){
+    console.log("Data in addById = ", data);
+
+  })
+}
+
 util.findById = function(options, id) {
   return util.read()
   .then(function(data){
@@ -50,11 +58,18 @@ util.findById = function(options, id) {
     if(res.found === false && options.create === true){
       res.data[id] = [];
       return util.write(res.data)
+    } else if (res.found === false && options.create === false) {
+      return -1;
     }
-    return true;
+    return res;
   })
-  .then(function(){
-    return true;
+  .then(function(res){
+    if(Array.isArray(res))
+      return res;
+    if(res === -1)
+      return -1;
+    else
+      return [];
   })
   .catch(function(err){
     if(err instanceof Error) {
