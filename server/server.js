@@ -8,7 +8,7 @@ var GithubStrat  = require('passport-github2').Strategy;
 
 var authToken    = require('./authentication');
 var recipes      = require('./recipes');
-var db           = require('./dbUtil');
+var db           = require('./db/dbUtil');
 
 var app = express();
 
@@ -18,28 +18,28 @@ app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
 
 
-// ///basic db method testing
-// db.write({ testing: 1, "2": [3] });
-// db.read()
-// .then(function(res){
-//   console.log("test read & write", res, res.testing)
-//   return db.findById("testing");
-// })
-// .then(function(res){
-//   console.log("test find by id on existing", res);
-//   return db.findById("didntexist")
-// })
-// .then(function(res){
-//   console.log("test find by id on non-existant", res);
-//   return db.findOrCreate("didntexist")
-// })
-// .then(function(res){
-//   console.log("test findOrCreate on non-existant", res);
-//   return db.findById("didntexist")
-// })
-// .then(function(res){
-//   console.log("test find by id on newly existing", res);
-// })
+///basic db method testing
+db.write({ testing: 1, "2": [3] });
+db.read()
+.then(function(res){
+  console.log("test read & write", res, res.testing)
+  return db.findById({"create": false},"testing");
+})
+.then(function(res){
+  console.log("test find by id on existing", res);
+  return db.findById({"create": false},"didntexist")
+})
+.then(function(res){
+  console.log("test find by id on non-existant", res);
+  return db.findById({"create": true},"didntexist")
+})
+.then(function(res){
+  console.log("test findOrCreate on non-existant", res);
+  return db.findById({"create": false},"didntexist")
+})
+.then(function(res){
+  console.log("test find by id on newly existing", res);
+})
 
 app.use(passport.initialize());
 app.use(passport.session());
