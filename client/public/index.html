@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- <link rel="stylesheet" href="../css/style.css" /> -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.js"></script>
   <title>Homepage</title>
 </head>
 <body>
@@ -9,5 +9,16 @@
     <a href="/login"> Login </a>
     <br>
     <a href="/logout"> Log out </a>
+    <br>
+    <button id="clicky"> Favourite </button>
 </body>	
+<script>
+  document.getElementById("clicky").onclick = function() {
+    $.ajax({
+      method: "GET",
+      url: "http://localhost:1337/test",
+      data: {"RECIPE-ID":"9999999999999999999999999999999999999999999997"}
+    })
+  }
+</script>
 </html>

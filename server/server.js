@@ -34,6 +34,20 @@ app.get('/logout', function(req, res){
 
 app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }));
 
+app.get('/test', function(req,res){
+  console.log("--------------------GOT THE STUFF ---------------", req.session.passport, req.query);
+  res.send()
+});
+
+
+app.post('/recipe/favourite', function(req, res) {
+  //will need user ID and some way to identify site with the ability to display a link
+  res.send();
+});
+
+
+
+
 app.get('/', function(req,res){
   res.send() 
 });
@@ -62,13 +76,6 @@ app.post('/searchFood2Fork', function(req, res) {
     res.send(JSON.stringify(recipes));
   });
 });
-
-
-app.post('/recipe/favourite', function(req, res) {
-  //will need user ID and some way to identify site with the ability to display a link
-  res.send();
-});
-
 
 app.listen(1337);
 console.log("App is listening");
