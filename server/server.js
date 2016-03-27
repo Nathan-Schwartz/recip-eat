@@ -23,7 +23,7 @@ var configureMiddleware = require('./passport')(app,express);
 app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
 
 app.get('/logout', function(req, res){
- // req.session.destroy();
+  req.session.destroy();
   req.logout();
   res.redirect('https://github.com/logout');
 });
@@ -77,4 +77,4 @@ app.post('/searchFood2Fork', function(req, res) {
 });
 
 app.listen(1337);
-console.log("App is listening");
+console.log("App is listening on LEET");

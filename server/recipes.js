@@ -1,6 +1,5 @@
 var Promise   = require('bluebird');
 var request   = require('request');
-var qs        = require('query-string');
 var db        = require('./db/dbUtil');
 
 var authToken = require('./authentication');
