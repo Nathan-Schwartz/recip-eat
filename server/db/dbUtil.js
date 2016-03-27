@@ -1,6 +1,5 @@
 var Promise = require("bluebird");
 var fs      = require('fs');
-var bcrypt  = require('bcryptjs');
 
 var readFile = Promise.promisify(fs.readFile);
 var writeFile = Promise.promisify(fs.writeFile);

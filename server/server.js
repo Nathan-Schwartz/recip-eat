@@ -18,28 +18,28 @@ app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
 
 
-///basic db method testing
-db.write({ testing: 1, "2": [3] });
-db.read()
-.then(function(res){
-  console.log("test read & write", res, res.testing)
-  return db.findById({"create": false},"testing");
-})
-.then(function(res){
-  console.log("test find by id on existing", res);
-  return db.findById({"create": false},"didntexist")
-})
-.then(function(res){
-  console.log("test find by id on non-existant", res);
-  return db.findById({"create": true},"didntexist")
-})
-.then(function(res){
-  console.log("test findOrCreate on non-existant", res);
-  return db.findById({"create": false},"didntexist")
-})
-.then(function(res){
-  console.log("test find by id on newly existing", res);
-})
+// ///basic db method testing
+// db.write({ testing: 1, "2": [3] });
+// db.read()
+// .then(function(res){
+//   console.log("test read & write", res, res.testing)
+//   return db.findById({"create": false},"testing");
+// })
+// .then(function(res){
+//   console.log("test find by id on existing", res);
+//   return db.findById({"create": false},"didntexist")
+// })
+// .then(function(res){
+//   console.log("test find by id on non-existant", res);
+//   return db.findById({"create": true},"didntexist")
+// })
+// .then(function(res){
+//   console.log("test findOrCreate on non-existant", res);
+//   return db.findById({"create": false},"didntexist")
+// })
+// .then(function(res){
+//   console.log("test find by id on newly existing", res);
+// })
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -87,9 +87,7 @@ app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
 
 app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }));
 
-app.get('/', function(req,res){
-  res.send();
-});
+app.get('/', function(req,res){ res.send() });
 
 app.post('/searchRecipePuppy', function(req, res) {
 
@@ -115,9 +113,10 @@ app.post('/searchFood2Fork', function(req, res) {
 });
 
 
-// app.post('/recipe/like', function(req, res) {
-//   res.send();
-// });
+app.post('/recipe/favourite', function(req, res) {
+  //will need user ID and some way to identify site with the ability to display a link
+  res.send();
+});
 
 
 app.listen(1337);
