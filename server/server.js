@@ -3,13 +3,14 @@ var path         = require('path');
 var bodyParser   = require('body-parser');
 var cookieParser = require('cookie-parser');
 var queryString  = require('query-string');
-var passport    = require('passport');
+var passport     = require('passport');
+var session      = require('express-session');
+var uuid         = require('uuid');
 
 var recipes   = require('./recipes');
 var db        = require('./db/dbUtil');
 
 var app = express();
-require('./passport')(app,express);
 
 // require('./fakeDatabaseTests')();
 
@@ -17,14 +18,23 @@ app.use( express.static( path.join(__dirname + '/..') + '/client/public'));
 app.use( cookieParser() );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
-// app.use( function(req, res, next){  console.log("RES KEYS", Object.keys(res), "REQ KEYS", Object.keys(req), "----PASSPORT----", req._passport, "---HEADERS---", req.headers, "---COOKIES---", req.cookies, "---SIGNED COOKIES---", req.signedCookies, "---SECRET---", req.secret); next(); }); 
+
+var configureMiddleware = require('./passport')(app,express);
+
+app.use( function(req, res, next){  console.log("---HEADERS---", req.headers, "---COOKIES---", req.cookies,  "---Session---", req.session, req.session.passport); next();
+});
 
 app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+app.get('/logout', function(req, res){
+ // req.session.destroy();
+  req.logout();
+  res.redirect('https://github.com/logout');
+});
 
 app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }));
 
 app.get('/', function(req,res){
-  //console.log("RES KEYS", Object.keys(res), "REQ KEYS", Object.keys(req));
   res.send() 
 });
 

@@ -82,8 +82,8 @@ util.addById = function(id, newData) {
   })
 }
 
-util.findById = function(options, id) {
-  if(typeof id !== "string" || typeof options !== "object" || arguments.length > 2)
+util.findById = function(options, id, profile) {
+  if(typeof id !== "string" || typeof options !== "object" || arguments.length > 3)
     throw new Error("util.findById expects the first argument to be a string, second to be an object, and there should only be two arguments");
 
   return util.read()
@@ -95,6 +95,7 @@ util.findById = function(options, id) {
   .then(function(res){
     if(res.found === false && options.create === true){
       res.data[id] = [];
+      if(profile) res.data[id].push(profile);
       return util.write(res.data)
     } else if (res.found === false && options.create === false) {
       return -1;
