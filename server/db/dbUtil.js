@@ -1,67 +1,69 @@
-// var Promise = require("bluebird");
-// var fs      = require('fs');
+var Promise = require("bluebird");
+var fs      = require('fs');
 
-// var readFile = Promise.promisify(fs.readFile);
-// var writeFile = Promise.promisify(fs.writeFile);
+var readFile = Promise.promisify(fs.readFile);
+var writeFile = Promise.promisify(fs.writeFile);
 
-// var util = module.exports;
+var util = module.exports;
 
-// //Everything returns promises. Methods are:
-//   //updateCounter
-//   //write
-//   //addById
-//   //read
-//   //findById (can do findOrCreate as well)
+//Everything returns promises. Methods are:
+  //updateCounter
+  //write
+  //addById
+  //read
+  //findById (can do findOrCreate as well)
 
-// //write a duplicate removal function?
+//write a duplicate removal function?
 
 
-// util.updateCounter = function(number){
-//   if(typeof number !== "number" || arguments.length > 1)
-//     throw new Error("util.updateCounter expected a number (1 argument)");
 
-//   return util.read()
-//   .then(function(res){
-//     res["_RECIPE_ID_COUNTER"] = number;
-//     return util.write(res);
-//   })
-//   .then(function(){
-//     return number;
-//   })
-//   .catch(function(err){
-//     console.log("Problems in addById", err);
-//   })
-// }
 
-// util.write = function(dataText) {
-//   if(arguments.length > 1)
-//     throw new Error("util.write expects 1 argument");
 
-//   if(typeof dataText !== "string")
-//     dataText = JSON.stringify(dataText);
+util.updateCounter = function(number){
+  if(typeof number !== "number" || arguments.length > 1)
+    throw new Error("util.updateCounter expected a number (1 argument)");
 
-//   return writeFile('./server/db/db.js', dataText)
-//   .catch(function(err){
-//     if(err instanceof Error) {
-//       throw err;
-//     }
-//     console.log("Error writing file in util.js", err);
-//   })
-// }
+  return util.read()
+  .then(function(res){
+    res["_RECIPE_ID_COUNTER"] = number;
+    return util.write(res);
+  })
+  .then(function(){
+    return number;
+  })
+  .catch(function(err){
+    console.log("Problems in addById", err);
+  })
+}
 
-// util.read = function() {
-//   return readFile('./server/db/db.js')
-//   .then(function(data){
-//   	return JSON.parse(String(data));
-//   })
-//   .catch(function(err){
-//   	if(err instanceof Error) {
-//       throw err;
-//   	}
-//   	console.log("Error writing file in util.js", err);
-//   })
-// }
+util.write = function(dataText) {
+  if(arguments.length > 1)
+    throw new Error("util.write expects 1 argument");
 
+  if(typeof dataText !== "string")
+    dataText = JSON.stringify(dataText);
+
+  return writeFile('./server/db/db.js', dataText)
+  .catch(function(err){
+    if(err instanceof Error) {
+      throw err;
+    }
+    console.log("Error writing file in util.js", err);
+  })
+}
+
+util.read = function() {
+  return readFile('./server/db/db.js')
+  .then(function(data){
+    return JSON.parse(String(data));
+  })
+  .catch(function(err){
+    if(err instanceof Error) {
+      throw err;
+    }
+    console.log("Error writing file in util.js", err);
+  })
+}
 // util.addById = function(id, newData) {
 //   if(typeof id !== "string" || arguments.length > 2)
 //     throw new Error("util.addById expects the first argument to be a string, and there should only be two arguments");
@@ -134,69 +136,7 @@
 // }
 
 
-var Promise = require("bluebird");
-var fs      = require('fs');
 
-var readFile = Promise.promisify(fs.readFile);
-var writeFile = Promise.promisify(fs.writeFile);
-
-var util = module.exports;
-
-//Everything returns promises. Methods are:
-  //updateCounter
-  //write
-  //addById
-  //read
-  //findById (can do findOrCreate as well)
-
-//write a duplicate removal function?
-
-
-util.updateCounter = function(number){
-  if(typeof number !== "number" || arguments.length > 1)
-    throw new Error("util.updateCounter expected a number (1 argument)");
-
-  return util.read()
-  .then(function(res){
-    res["_RECIPE_ID_COUNTER"] = number;
-    return util.write(res);
-  })
-  .then(function(){
-    return number;
-  })
-  .catch(function(err){
-    console.log("Problems in addById", err);
-  })
-}
-
-util.write = function(dataText) {
-  if(arguments.length > 1)
-    throw new Error("util.write expects 1 argument");
-
-  if(typeof dataText !== "string")
-    dataText = JSON.stringify(dataText);
-
-  return writeFile('./server/db/db.js', dataText)
-  .catch(function(err){
-    if(err instanceof Error) {
-      throw err;
-    }
-    console.log("Error writing file in util.js", err);
-  })
-}
-
-util.read = function() {
-  return readFile('./server/db/db.js')
-  .then(function(data){
-    return JSON.parse(String(data));
-  })
-  .catch(function(err){
-    if(err instanceof Error) {
-      throw err;
-    }
-    console.log("Error writing file in util.js", err);
-  })
-}
 
 util.addById = function(id, newData) {
   if(typeof id !== "string" || arguments.length > 2)
