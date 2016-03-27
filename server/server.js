@@ -37,13 +37,45 @@ app.get('/test', function(req,res){
 
 
 app.post('/user/addfavourite', function(req, res) {
+  if(!req.session || !req.session.passport || !req.session.passport.user || !req.query)
+    throw new Error("Bad things happened because we didn't get a user id from the session.")]
 
+  findById({}, req.session.passport.user)
+  .then(function(thisUser){
+    //thisUser.recipes.push( req.query );
+    //ORR
+    thisUser.push( req.query );
+    return findById({}, "_ALL_RECIPES");
+  }) // TODO: need to write to the object
+  
   res.send();
 });
 
 app.get('/user/favourites', function(req, res) {
+  if(!req.session || !req.session.passport || !req.session.passport.user)
+    throw new Error("Bad things happened because we didn't get a user id from the session.")
 
-  res.send();
+  var userRecipes;
+  var fullRecipeData = [];
+
+  findById({}, req.session.passport.user)
+  .then(function(thisUser){
+    //userRecipes = thisUser.recipes.slice();
+    //ORR
+    userRecipes = thisUser.slice(1);
+    return findById({}, "_ALL_RECIPES");
+  })
+  .then(function(allTheRecipes){
+    for(var i=0, length=allTheRecipes.length; i<length; i++) {
+      if(userRecipes.indexOf( allTheRecipes[i].id )  !== -1) {
+        fullRecipeData.push( allTheRecipes[i] );
+      }
+    }
+    res.send(JSON.stringify(fullRecipeData));
+  })
+  .catch(function(err){
+    res.send(err);
+  })
 });
 
 

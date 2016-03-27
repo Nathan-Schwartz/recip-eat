@@ -14,6 +14,9 @@ describe("Pseudo-Database should work", function(){
     .then(function(res){
       expect(res).to.deep.equal(testObj);
     })
+    .catch(function(err){
+      throw err;
+    })
   });
 
   it('Should find & return existing users', function() {
@@ -21,12 +24,18 @@ describe("Pseudo-Database should work", function(){
     .then(function(res){
       expect(res).to.equal(0);
     })
+    .catch(function(err){
+      throw err;
+    })
   });
 
   it('Should not find non-existant users', function() {
     db.findById({"create": false},"doesntExist")
     .then(function(res){
       expect(res).to.equal(-1);
+    })
+    .catch(function(err){
+      throw err;
     })
   });
 
@@ -42,6 +51,9 @@ describe("Pseudo-Database should work", function(){
     .then(function(res){
       expect(res).to.deep.equal(sampleNewRecipe);
     })
+    .catch(function(err){
+      throw err;
+    })
   });
 
   it('Should update counter', function() {
@@ -51,6 +63,9 @@ describe("Pseudo-Database should work", function(){
     })
     .then(function(res){
       expect(res).to.equal(2);
+    })
+    .catch(function(err){
+      throw err;
     })
   });
 
@@ -64,6 +79,9 @@ describe("Pseudo-Database should work", function(){
     })
     .then(function(res){
       expect(res).to.deep.equal(recipeArr);
+    })
+    .catch(function(err){
+      throw err;
     })
   });
 

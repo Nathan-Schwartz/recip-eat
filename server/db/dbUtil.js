@@ -97,6 +97,26 @@ util.read = function() {
 //   })
 // }
 
+util.addById = function(id, newData) {
+  if(typeof id !== "string" || arguments.length > 2)
+    throw new Error("util.addById expects the first argument to be a string, and there should only be two arguments");
+
+  return util.read()
+  .then(function(res){
+    if(Array.isArray(newData)) {
+      for(var i=0, length=newData.length; i<length; i++) {
+        res[id].push(newData[i]);
+      }
+    }
+    else res[id].push(newData);
+
+    return util.write(res);
+  })
+  .catch(function(err){
+    console.log("Problems in addById", err);
+  })
+}
+
 // util.findById = function(options, id, profile) {
 //   if(typeof id !== "string" || typeof options !== "object" || arguments.length > 3)
 //     throw new Error("util.findById expects the first argument to be a string, second to be an object, and there should only be two arguments");
@@ -134,29 +154,6 @@ util.read = function() {
 //     console.log("Error in findById in util.js", err);
 //   })
 // }
-
-
-
-
-util.addById = function(id, newData) {
-  if(typeof id !== "string" || arguments.length > 2)
-    throw new Error("util.addById expects the first argument to be a string, and there should only be two arguments");
-
-  return util.read()
-  .then(function(res){
-    if(Array.isArray(newData)) {
-      for(var i=0, length=newData.length; i<length; i++) {
-        res[id].push(newData[i]);
-      }
-    }
-    else res[id].push(newData);
-
-    return util.write(res);
-  })
-  .catch(function(err){
-    console.log("Problems in addById", err);
-  })
-}
 
 util.findById = function(options, id, profile) {
   if(typeof id !== "string" || typeof options !== "object" || arguments.length > 3)

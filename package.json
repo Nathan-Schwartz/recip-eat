@@ -20,7 +20,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "./node_modules/.bin/nodemon --ignore node_modules server/server.js",
-    "test": "./node_modules/.bin/mocha --bail --reporter nyan server/db/dbTests.js"
+    "test": "./node_modules/.bin/mocha --bail server/db/dbTests.js"
   },
   "repository": {
     "type": "git",

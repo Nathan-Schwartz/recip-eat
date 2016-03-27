@@ -91,7 +91,7 @@ function byThumbNail(current) {
   return current.thumbnail.length > 0;
 }
 
-function addId(recipeArr) {
+function addId(recipeArr) { 
 
   return db.findById({}, "_RECIPE_ID_COUNTER")
   .then(function(RecCounter){

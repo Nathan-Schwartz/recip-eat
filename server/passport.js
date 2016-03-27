@@ -53,14 +53,13 @@ module.exports = function(app, express) {
   // });
 
   passport.deserializeUser(function(id, done) {
-    //console.log("whats goin on in here", arguments, "ID:", id);
 
     db.findById({}, id)
     .then(function(thisUser){
-    //  console.log("Retrieved this user:", thisUser[0]); //Due to time limitations I made the profile the first item in the list of favourited recipes
-      if(thisUser !== -1)
-        return done(null, thisUser[0]);
-      throw new Error("Passport wanted a user that didn't exist");
+    console.log("Retrieved this user:", thisUser[0]);
+      if(thisUser === -1) throw new Error("Passport wanted a user that didn't exist");
+      
+      return done(null, thisUser[0]);
     })
     .catch(function(err){
       return done(err, null);
