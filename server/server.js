@@ -38,7 +38,7 @@ app.get('/test', function(req,res){
 
 app.post('/user/addfavourite', function(req, res) {
   if(!req.session || !req.session.passport || !req.session.passport.user || !req.query)
-    throw new Error("Bad things happened because we didn't get a user id from the session.")]
+    throw new Error("Bad things happened because we didn't get a user id from the session.");
 
   findById({}, req.session.passport.user)
   .then(function(thisUser){
@@ -53,7 +53,7 @@ app.post('/user/addfavourite', function(req, res) {
 
 app.get('/user/favourites', function(req, res) {
   if(!req.session || !req.session.passport || !req.session.passport.user)
-    throw new Error("Bad things happened because we didn't get a user id from the session.")
+    throw new Error("Bad things happened because we didn't get a user id from the session.");
 
   var userRecipes;
   var fullRecipeData = [];
@@ -94,7 +94,10 @@ app.post('/searchRecipePuppy', function(req, res) {
   .then(function(recipes){
     console.log("retrieved recipes:",recipes);
     res.send(JSON.stringify(recipes));
-  });
+  })
+  .catch(function(err){
+    res.send(err);
+  })
 });
 
 app.post('/searchFood2Fork', function(req, res) {
@@ -105,8 +108,11 @@ app.post('/searchFood2Fork', function(req, res) {
   .then(function(recipes){
     console.log("retrieved recipes:",recipes);
     res.send(JSON.stringify(recipes));
-  });
+  })
+  .catch(function(err){
+    res.send(err);
+  })
 });
 
 app.listen(1337);
-console.log("App is listening on LEET");
+console.log("App is listening on 1337");
