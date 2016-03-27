@@ -92,20 +92,20 @@ function byThumbNail(current) {
   return current.thumbnail.length > 0;
 }
 
-function addId(recipeObj) {
+function addId(recipeArr) {
 
   return db.findById({}, "_RECIPE_ID_COUNTER")
   .then(function(RecCounter){
     console.log("Got recipe ID counter:", RecCounter);
-    for(var i=0, length=recipeObj.length; i<length; i++){
-      recipeObj[i].id = RecCounter++;
+    for(var i=0, length=recipeArr.length; i<length; i++){
+      recipeArr[i].id = RecCounter++;
     }
     return db.updateCounter(RecCounter);
   })
   .then(function(){
-    return db.addById("_ALL_RECIPES", recipeObj)
+    return db.addById("_ALL_RECIPES", recipeArr)
   })
   .then(function(){
-    return recipeObj;
+    return recipeArr;
   })
 }

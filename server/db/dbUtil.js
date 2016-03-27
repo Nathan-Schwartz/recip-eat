@@ -68,12 +68,25 @@ util.addById = function(id, newData) {
 
   return util.read()
   .then(function(res){
-    if(Array.isArray(newData)) {
-      for(var i=0, length=newData.length; i<length; i++) {
-        res[id].push(newData[i]);
+    if(id === "_ALL_RECIPES"){
+      if(Array.isArray(newData)) {
+        for(var i=0, length=newData.length; i<length; i++) {
+          res[id].push(newData[i]);
+        }
+      }
+      else {
+        res[id].push(newData);
+      }
+    } else {
+      if(Array.isArray(newData)) {
+        for(var i=0, length=newData.length; i<length; i++) {
+          res[id].recipes.push(newData[i]);
+        }
+      }
+      else {
+        res[id].recipes.push(newData);
       }
     }
-    else res[id].push(newData);
 
     return util.write(res);
   })
@@ -86,6 +99,8 @@ util.findById = function(options, id, profile) {
   if(typeof id !== "string" || typeof options !== "object" || arguments.length > 3)
     throw new Error("util.findById expects the first argument to be a string, second to be an object, and there should only be two arguments");
 
+  profile = profile || null;
+
   return util.read()
   .then(function(data){
     return data[id] !== undefined
@@ -94,8 +109,10 @@ util.findById = function(options, id, profile) {
   })
   .then(function(res){
     if(res.found === false && options.create === true){
-      res.data[id] = [];
-      if(profile) res.data[id].push(profile);
+      res.data[id] = {};//changed from []
+      res.data[id].profile = profile; //new
+      res.data[id].recipes = []; //new
+      // if(profile) res.data[id].push(profile); //cut
       return util.write(res.data)
     } else if (res.found === false && options.create === false) {
       return -1;
@@ -103,12 +120,11 @@ util.findById = function(options, id, profile) {
     return res;
   })
   .then(function(res){
-    if(Array.isArray(res))
+    if(Array.isArray(res) || typeof res === "number")
       return res;
-    if(typeof res === "number")
-      return res;
-    else
-      return [];
+
+    else //we just wrote it
+      return util.findById({}, id);
   })
   .catch(function(err){
     if(err instanceof Error) {

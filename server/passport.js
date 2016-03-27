@@ -33,20 +33,18 @@ module.exports = function(app, express) {
 
   app.use(passport.initialize());
   app.use(passport.session());
-  // app.use(passport.authenticate('github', { failureRedirect: '/login',  failureFlash: 'Invalid username or password.' }));
+  app.use("/user/*", passport.authenticate('github', { failureRedirect: 'http://www.google.com',  failureFlash: 'Invalid username or password.' }));
 
   passport.serializeUser(function(user, done) {
     return done(null, String(user.id));
   });
 
   passport.deserializeUser(function(id, done) {
-    //console.log("whats goin on in here", arguments, "ID:", id);
 
     db.findById({}, id)
     .then(function(thisUser){
-    //  console.log("Retrieved this user:", thisUser[0]); //Due to time limitations I made the profile the first item in the list of favourited recipes
       if(thisUser !== -1)
-        return done(null, thisUser[0]);
+        return done(null, thisUser.profile);
       throw new Error("Passport wanted a user that didn't exist");
     })
     .catch(function(err){
@@ -60,7 +58,8 @@ module.exports = function(app, express) {
       callbackURL: "http://localhost:1337/auth/callback"
     },
     function(accessToken, refreshToken, profile, done) {
-      db.findById({ "create": true}, profile.id, profile._json)
+      console.log("profile", profile);
+      db.findById({ "create": true}, profile._json.id, profile._json)
       .then(function(){
         return done(null, profile);
       })

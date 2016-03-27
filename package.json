@@ -14,14 +14,13 @@
     "nodemon": "^1.9.1",
     "passport": "^0.3.2",
     "passport-github2": "^0.1.10",
-    "query-string": "^3.0.3",
     "request": "^2.69.0",
     "uuid": "^2.0.1"
   },
   "devDependencies": {},
   "scripts": {
     "start": "./node_modules/.bin/nodemon --ignore node_modules server/server.js",
-    "test": "./node_modules/.bin/mocha --bail --reporter nyan server/fakeDatabaseTests.js"
+    "test": "./node_modules/.bin/mocha --bail --reporter nyan server/db/dbTests.js"
   },
   "repository": {
     "type": "git",

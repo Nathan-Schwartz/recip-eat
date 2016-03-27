@@ -2,13 +2,12 @@ var express      = require('express');
 var path         = require('path');
 var bodyParser   = require('body-parser');
 var cookieParser = require('cookie-parser');
-var queryString  = require('query-string');
 var passport     = require('passport');
 var session      = require('express-session');
 var uuid         = require('uuid');
 
-var recipes   = require('./recipes');
-var db        = require('./db/dbUtil');
+var recipes = require('./recipes');
+var db      = require('./db/dbUtil');
 
 var app = express();
 
