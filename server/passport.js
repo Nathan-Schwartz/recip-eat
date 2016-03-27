@@ -35,16 +35,12 @@ module.exports = function(app, express) {
   // app.use(passport.authenticate('github', { failureRedirect: '/login',  failureFlash: 'Invalid username or password.' }));
 
   passport.serializeUser(function(user, done) {
-    console.log("--SERIALIZING--   user is ", Object.keys(user), "id is", user.id);
     return done(null, String(user.id));
   });
-  
-//NEW BROKEN VERSION
+
   passport.deserializeUser(function(id, done) {
-    console.log("--DESERIALIZING--   id is ", id);
     db.findById({}, id)
     .then(function(thisUser){
-      console.log("Retrieved this user:", thisUser.profile);
       if(thisUser === -1) throw new Error("Passport wanted a user that didn't exist");
 
       return done(null, thisUser.profile);
@@ -54,32 +50,14 @@ module.exports = function(app, express) {
     })
   });
 
-// //OLD WORKING VERSION
-//   passport.deserializeUser(function(id, done) {
-
-//     db.findById({}, id)
-//     .then(function(thisUser){
-//       console.log("Retrieved this user:", thisUser[0]);
-//       if(thisUser === -1) throw new Error("Passport wanted a user that didn't exist");
-      
-//       return done(null, thisUser[0]);
-//     })
-//     .catch(function(err){
-//       return done(err, null);
-//     })
-//   });
-
-
-//NEW BROKEN VERSION
   passport.use(new GithubStrat({
       clientID: authToken.githubClientId,
       clientSecret: authToken.gitHubClientSecret,
       callbackURL: "http://localhost:1337/auth/callback"
     },
     function(accessToken, refreshToken, profile, done) {
-      console.log("--CREATING--   profile is ", Object.keys(profile));
       db.findById({ "create": true}, profile.id, profile._json)
-      .then(function(cachedUser){
+      .then(function(){
         return done(null, profile);
       })
       .catch(function(err){
@@ -88,21 +66,3 @@ module.exports = function(app, express) {
     })
   );
 }
-
-// //OLD WORKING VERSION
-//   passport.use(new GithubStrat({
-//       clientID: authToken.githubClientId,
-//       clientSecret: authToken.gitHubClientSecret,
-//       callbackURL: "http://localhost:1337/auth/callback"
-//     },
-//     function(accessToken, refreshToken, profile, done) {
-//       db.findById({ "create": true}, profile.id, profile._json)
-//       .then(function(){
-//         return done(null, profile);
-//       })
-//       .catch(function(err){
-//         return done(err, null);
-//       })
-//     })
-//   );
-// }
