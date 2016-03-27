@@ -84,7 +84,7 @@ util.addById = function(id, newData) {
 
 util.findById = function(options, id) {
   if(typeof id !== "string" || typeof options !== "object" || arguments.length > 2)
-    throw new Error("util.addById expects the first argument to be a string, second to be an object, and there should only be two arguments");
+    throw new Error("util.findById expects the first argument to be a string, second to be an object, and there should only be two arguments");
 
   return util.read()
   .then(function(data){

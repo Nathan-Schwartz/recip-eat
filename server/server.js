@@ -17,13 +17,14 @@ app.use( express.static( path.join(__dirname + '/..') + '/client/public'));
 app.use( cookieParser() );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
+// app.use( function(req, res, next){  console.log("RES KEYS", Object.keys(res), "REQ KEYS", Object.keys(req), "----PASSPORT----", req._passport, "---HEADERS---", req.headers, "---COOKIES---", req.cookies, "---SIGNED COOKIES---", req.signedCookies, "---SECRET---", req.secret); next(); }); 
 
 app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
 
 app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }));
 
-app.get('/', passport.authenticate('github', { failureRedirect: '/login'}), function(req,res){
-  console.log("res,req", Object.keys(res), Object.keys(req));
+app.get('/', function(req,res){
+  //console.log("RES KEYS", Object.keys(res), "REQ KEYS", Object.keys(req));
   res.send() 
 });
 

@@ -1,13 +1,25 @@
-var GithubStrat = require('passport-github2').Strategy;
-var passport    = require('passport');
+var GithubStrat    = require('passport-github2').Strategy;
+var passport       = require('passport');
+var session        = require('express-session');
+var uuid           = require('uuid');
 
 var authToken = require('./authentication');
 var db        = require('./db/dbUtil');
 
+
 module.exports = function(app, express) {
 
+  app.use(session({
+    genid: function(req) {
+      return uuid.v4();
+    },
+    secret: 'keyboard cat',
+    resave: true,
+    saveUninitialized: true
+  }))
   app.use(passport.initialize());
   app.use(passport.session());
+  // app.use(passport.authenticate('github', { failureRedirect: '/login',  failureFlash: 'Invalid username or password.' }));
 
   passport.serializeUser(function(user, done) {
     db.read()
@@ -17,7 +29,7 @@ module.exports = function(app, express) {
   });
 
   passport.deserializeUser(function(id, done) {
-    db.findById(id)
+    db.findById({}, id)
     .then(function(thisUser){
       if(thisUser !== -1)
         return done(null, thisUser);
@@ -41,7 +53,7 @@ module.exports = function(app, express) {
       .catch(function(err){
         return done(err, null);
       })
-      console.log("profile", Object.keys(profile));
+      // console.log("profile", Object.keys(profile));
     })
   );
 }
