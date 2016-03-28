@@ -31,27 +31,30 @@ app.get('/logout', function(req, res){
 app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }));
 
 app.get('/test', function(req,res){
-  console.log("--GOT THE STUFF --", req.session.passport, req.query);
+  console.log("--GOT THE STUFF --", req.session.passport, req.query.recipeId);
   res.status(200).send()
 });
 
 
 app.post('/user/addfavourite', function(req, res) {
-  if(!req.session || !req.session.passport || !req.session.passport.user || !req.query)
-    throw new Error("Bad things happened because we didn't get a user id from the session.");
+
+  if(!req.session || !req.session.passport || !req.session.passport.user || !req.body || !req.body.recipeId){
+    res.status(500).send();
+    throw new Error("Bad things happened because we didn't get a user id or body from the session.");
+  }
 
   console.log("This should be the github ID", req.session.passport.user);
-  console.log("This should be the recipe ID", req.query);
+  console.log("This should be the recipe ID", req.body.recipeId);
 
   var allData;
 
   db.read()
   .then(function(res){
     allData = res;
-    return res[req.session.passport.user]);
+    return res[req.session.passport.user];
   })
   .then(function(thisUser){
-    thisUser.recipes.push( req.query );
+    thisUser.recipes.push( req.body.recipeId );
     return db.write( allData );
   })
   .then(function(){

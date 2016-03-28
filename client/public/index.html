@@ -10,14 +10,32 @@
     <br>
     <a href="/logout"> Log out </a>
     <br>
-    <button id="clicky"> Favourite </button>
+    <button id="test"> test </button>
+    <button id="clicky"> add favourite </button>
+    <button id="clickety"> get favourites </button>
 </body>	
 <script>
-  document.getElementById("clicky").onclick = function() {
+
+  document.getElementById("test").onclick = function() {
     $.ajax({
       method: "GET",
       url: "http://localhost:1337/test",
-      data: {"RECIPE-ID":"99999999999999999999SUPEREASYTOFIND9999999999999999999999997"}
+      data: {"recipeId":"99999999999999999999SUPEREASYTOFIND9999999999999999999999997"}
+    })
+  }
+
+  document.getElementById("clicky").onclick = function() {
+    $.ajax({
+      method: "POST",
+      url: "http://localhost:1337/user/addfavourite",
+      data: {"recipeId":"99999999999999999999SUPEREASYTOFIND9999999999999999999999997"}
+    })
+  }
+
+  document.getElementById("clickety").onclick = function() {
+    $.ajax({
+      method: "GET",
+      url: "http://localhost:1337/user/favourites"
     })
   }
 </script>
