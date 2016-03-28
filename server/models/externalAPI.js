@@ -1,8 +1,8 @@
 var Promise   = require('bluebird');
 var request   = require('request');
-var db        = require('./db/dbUtil');
 
-var authToken = require('./authentication');
+var db        = require('../db/dbUtil');
+var authToken = require('../authentication');
 
 var recipes = module.exports;
 

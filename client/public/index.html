@@ -15,15 +15,6 @@
     <button id="clickety"> get favourites </button>
 </body>	
 <script>
-
-  document.getElementById("test").onclick = function() {
-    $.ajax({
-      method: "GET",
-      url: "http://localhost:1337/test",
-      data: {"recipeId":"99999999999999999999SUPEREASYTOFIND9999999999999999999999997"}
-    })
-  }
-
   document.getElementById("clicky").onclick = function() {
     $.ajax({
       method: "POST",
@@ -36,6 +27,9 @@
     $.ajax({
       method: "GET",
       url: "http://localhost:1337/user/favourites"
+    })
+    .then(function(gotstuff){
+      console.log(gotstuff);
     })
   }
 </script>
