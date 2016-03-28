@@ -15,6 +15,7 @@
     "chai": "^3.5.0",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
+    "grunt": "^0.4.5",
     "mocha": "^2.4.5",
     "nodemon": "^1.9.1",
     "passport": "^0.3.2",
@@ -26,14 +27,23 @@
     "underscore": "^1.8.3",
     "uuid": "^2.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-notify": "^0.4.5",
+    "grunt-reactify": "0.0.2"
+  },
   "scripts": {
     "start": "./node_modules/.bin/nodemon --ignore node_modules --ignore server/db/db.js server/server.js",
     "test": "./node_modules/.bin/mocha --bail server/db/dbTests.js"
   },
   "browserify": {
     "transform": [
-      "reactify"
+      "reactify",
+      {
+        "es6": true
+      }
     ]
   },
   "repository": {

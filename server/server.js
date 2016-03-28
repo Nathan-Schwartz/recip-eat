@@ -3,7 +3,7 @@ var path         = require('path');
 var bodyParser   = require('body-parser');
 var passport     = require('passport');
 var session      = require('express-session');
-var browserify   = require('browserify-middleware'); //new
+var browserify   = require('browserify-middleware');
 
 var API    = require('./models/externalAPI');
 var recipe = require('./models/recipe');
@@ -11,12 +11,17 @@ var recipe = require('./models/recipe');
 
 var app = express();
 
-app.use( "/main.js", browserify('./client/js/main.js', { transform: ["reactify"] } )) //new
-app.use( express.static( path.join(__dirname + '/..') + '/client/'));
+//app.use( browserify('./client/dist/bundle.js'));
+app.use( express.static( path.join(__dirname,'../client')));
+
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
 
 var configureMiddleware = require('./passport')(app,express);
+
+app.get('/bundle', function(){
+  res.status(200).send();
+});
 
 app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
 
