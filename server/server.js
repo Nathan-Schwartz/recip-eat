@@ -25,14 +25,14 @@ app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
 app.get('/logout', function(req, res){
   req.session.destroy();
   req.logout();
-  res.redirect('https://github.com/logout');
+  res.status(302).redirect('https://github.com/logout');
 });
 
 app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }));
 
 app.get('/test', function(req,res){
   console.log("--GOT THE STUFF --", req.session.passport, req.query);
-  res.send()
+  res.status(200).send()
 });
 
 
@@ -40,15 +40,26 @@ app.post('/user/addfavourite', function(req, res) {
   if(!req.session || !req.session.passport || !req.session.passport.user || !req.query)
     throw new Error("Bad things happened because we didn't get a user id from the session.");
 
-  findById({}, req.session.passport.user)
+  console.log("This should be the github ID", req.session.passport.user);
+  console.log("This should be the recipe ID", req.query);
+
+  var allData;
+
+  db.read()
+  .then(function(res){
+    allData = res;
+    return res[req.session.passport.user]);
+  })
   .then(function(thisUser){
-    //thisUser.recipes.push( req.query );
-    //ORR
-    thisUser.push( req.query );
-    return findById({}, "_ALL_RECIPES");
-  }) // TODO: need to write to the object
-  
-  res.send();
+    thisUser.recipes.push( req.query );
+    return db.write( allData );
+  })
+  .then(function(){
+    res.status(201).send();
+  })
+  .catch(function(err){
+    res.status(500).send(err);
+  })
 });
 
 app.get('/user/favourites', function(req, res) {
@@ -58,12 +69,10 @@ app.get('/user/favourites', function(req, res) {
   var userRecipes;
   var fullRecipeData = [];
 
-  findById({}, req.session.passport.user)
+  db.findById({}, req.session.passport.user)
   .then(function(thisUser){
-    //userRecipes = thisUser.recipes.slice();
-    //ORR
-    userRecipes = thisUser.slice(1);
-    return findById({}, "_ALL_RECIPES");
+    userRecipes = thisUser.recipes.slice();
+    return db.findById({}, "_ALL_RECIPES");
   })
   .then(function(allTheRecipes){
     for(var i=0, length=allTheRecipes.length; i<length; i++) {
@@ -71,16 +80,16 @@ app.get('/user/favourites', function(req, res) {
         fullRecipeData.push( allTheRecipes[i] );
       }
     }
-    res.send(JSON.stringify(fullRecipeData));
+    res.status(200).send(JSON.stringify(fullRecipeData));
   })
   .catch(function(err){
-    res.send(err);
+    res.status(500).send(err);
   })
 });
 
 
 app.get('/', function(req,res){
-  res.send() 
+  res.status(200).send() 
 });
 
 app.post('/searchRecipePuppy', function(req, res) {
@@ -92,11 +101,10 @@ app.post('/searchRecipePuppy', function(req, res) {
   //to filter entries without picture pass in {filter:"thumbnail"} instead of {}
   recipes.searchRecipePuppy({}, ingredients, category)
   .then(function(recipes){
-    console.log("retrieved recipes:",recipes);
-    res.send(JSON.stringify(recipes));
+    res.status(200).send(JSON.stringify(recipes));
   })
   .catch(function(err){
-    res.send(err);
+    res.status(500).send(err);
   })
 });
 
@@ -106,11 +114,10 @@ app.post('/searchFood2Fork', function(req, res) {
 
   recipes.searchFood2Fork({}, ingredients)
   .then(function(recipes){
-    console.log("retrieved recipes:",recipes);
-    res.send(JSON.stringify(recipes));
+    res.status(200).send(JSON.stringify(recipes));
   })
   .catch(function(err){
-    res.send(err);
+    res.status(500).send(err);
   })
 });
 

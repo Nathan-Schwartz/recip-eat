@@ -16,9 +16,6 @@ var util = module.exports;
 //write a duplicate removal function?
 
 
-
-
-
 util.updateCounter = function(number){
   if(typeof number !== "number" || arguments.length > 1)
     throw new Error("util.updateCounter expected a number (1 argument)");
@@ -64,38 +61,6 @@ util.read = function() {
     console.log("Error writing file in util.js", err);
   })
 }
-// util.addById = function(id, newData) {
-//   if(typeof id !== "string" || arguments.length > 2)
-//     throw new Error("util.addById expects the first argument to be a string, and there should only be two arguments");
-
-//   return util.read()
-//   .then(function(res){
-//     if(id === "_ALL_RECIPES"){
-//       if(Array.isArray(newData)) {
-//         for(var i=0, length=newData.length; i<length; i++) {
-//           res[id].push(newData[i]);
-//         }
-//       }
-//       else {
-//         res[id].push(newData);
-//       }
-//     } else {
-//       if(Array.isArray(newData)) {
-//         for(var i=0, length=newData.length; i<length; i++) {
-//           res[id].recipes.push(newData[i]);
-//         }
-//       }
-//       else {
-//         res[id].recipes.push(newData);
-//       }
-//     }
-
-//     return util.write(res);
-//   })
-//   .catch(function(err){
-//     console.log("Problems in addById", err);
-//   })
-// }
 
 util.addById = function(id, newData) {
   if(typeof id !== "string" || arguments.length > 2)
@@ -103,12 +68,25 @@ util.addById = function(id, newData) {
 
   return util.read()
   .then(function(res){
-    if(Array.isArray(newData)) {
-      for(var i=0, length=newData.length; i<length; i++) {
-        res[id].push(newData[i]);
+    if(id === "_ALL_RECIPES"){
+      if(Array.isArray(newData)) {
+        for(var i=0, length=newData.length; i<length; i++) {
+          res[id].push(newData[i]);
+        }
+      }
+      else {
+        res[id].push(newData);
+      }
+    } else {
+      if(Array.isArray(newData)) {
+        for(var i=0, length=newData.length; i<length; i++) {
+          res[id].recipes.push(newData[i]);
+        }
+      }
+      else {
+        res[id].recipes.push(newData);
       }
     }
-    else res[id].push(newData);
 
     return util.write(res);
   })
@@ -117,47 +95,11 @@ util.addById = function(id, newData) {
   })
 }
 
-// util.findById = function(options, id, profile) {
-//   if(typeof id !== "string" || typeof options !== "object" || arguments.length > 3)
-//     throw new Error("util.findById expects the first argument to be a string, second to be an object, and there should only be two arguments");
-
-//   profile = profile || null;
-
-//   return util.read()
-//   .then(function(data){
-//     return data[id] !== undefined
-//      ? data[id] //exists
-//      : {found: false, data: data}; //not found
-//   })
-//   .then(function(res){
-//     if(res.found === false && options.create === true){
-//       res.data[id] = {};
-//       res.data[id].profile = profile;
-//       res.data[id].recipes = [];
-//       return util.write(res.data)
-//     } else if (res.found === false && options.create === false) {
-//       return -1;
-//     }
-//     return res;
-//   })
-//   .then(function(res){
-//     if(Array.isArray(res) || typeof res === "number")
-//       return res;
-
-//     else //we just wrote it
-//       return util.findById({}, id); //infinite loop?
-//   })
-//   .catch(function(err){
-//     if(err instanceof Error) {
-//       throw err;
-//     }
-//     console.log("Error in findById in util.js", err);
-//   })
-// }
-
 util.findById = function(options, id, profile) {
   if(typeof id !== "string" || typeof options !== "object" || arguments.length > 3)
-    throw new Error("util.findById expects the first argument to be a string, second to be an object, and there should only be two arguments");
+    throw new Error("util.findById expects the first argument to be a string, second to be an object, and there should only be three arguments");
+
+  profile = profile || null;
 
   return util.read()
   .then(function(data){
@@ -167,21 +109,19 @@ util.findById = function(options, id, profile) {
   })
   .then(function(res){
     if(res.found === false && options.create === true){
-      res.data[id] = [];
-      if(profile) res.data[id].push(profile);
+      res.data[id] = { "profile": profile, "recipes": [] };
       return util.write(res.data)
     } else if (res.found === false && options.create === false) {
       return -1;
+    } else {
+      return res;    
     }
-    return res;
   })
   .then(function(res){
-    if(Array.isArray(res))
-      return res;
-    if(typeof res === "number")
-      return res;
-    else
-      return [];
+    if(typeof res === "object" && options.create === true)
+      return util.findById({}, id);
+
+    return res;
   })
   .catch(function(err){
     if(err instanceof Error) {
