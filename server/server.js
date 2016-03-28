@@ -11,7 +11,6 @@ var recipe = require('./models/recipe');
 var app = express();
 
 app.use( express.static( path.join(__dirname + '/..') + '/client/public'));
-app.use( cookieParser() );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
 
@@ -39,6 +38,7 @@ app.post('/user/addfavourite', function(req, res) {
     res.status(201).send();
   })
   .catch(function(err){
+    console.log("user/addfavourite", err)
     res.status(500).send(err);
   })
 });
@@ -50,10 +50,11 @@ app.get('/user/favourites', function(req, res) {
   }
 
   recipe.getList(req.session.passport.user)
-  .then(function(){
+  .then(function(fullRecipeData){
     res.status(200).send(JSON.stringify(fullRecipeData));
   })
   .catch(function(err){
+    console.log("user/favourites", err)
     res.status(500).send(err);
   })
 });
@@ -75,6 +76,7 @@ app.post('/searchRecipePuppy', function(req, res) {
     res.status(200).send(JSON.stringify(recipes));
   })
   .catch(function(err){
+    console.log("searchRecipePuppy", err)
     res.status(500).send(err);
   })
 });
@@ -88,6 +90,7 @@ app.post('/searchFood2Fork', function(req, res) {
     res.status(200).send(JSON.stringify(recipes));
   })
   .catch(function(err){
+    console.log("searchFood2Fork", err)
     res.status(500).send(err);
   })
 });

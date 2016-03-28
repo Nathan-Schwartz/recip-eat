@@ -1,4 +1,4 @@
-var db = require('../db/db.js');
+var db = require('../db/dbUtil.js');
 
 var recipeHelpers = module.exports;
 
@@ -22,7 +22,7 @@ recipeHelpers.getList = function(user){
   var userRecipes;
   var fullRecipeData = [];
 
-  return db.findById({}, req.session.passport.user)
+  return db.findById({}, user)
   .then(function(thisUser){
     userRecipes = thisUser.recipes.slice();
     return db.findById({}, "_ALL_RECIPES");
@@ -33,6 +33,6 @@ recipeHelpers.getList = function(user){
         fullRecipeData.push( allTheRecipes[i] );
       }
     }
-    return true;
+    return fullRecipeData;
   })
 };
