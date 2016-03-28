@@ -4,8 +4,14 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "babel-core": "^6.7.4",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-register": "^6.7.2",
+    "babelify": "^7.2.0",
     "bluebird": "^3.3.4",
     "body-parser": "^1.15.0",
+    "browserify-middleware": "^7.0.0",
     "chai": "^3.5.0",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
@@ -13,13 +19,22 @@
     "nodemon": "^1.9.1",
     "passport": "^0.3.2",
     "passport-github2": "^0.1.10",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "reactify": "^1.1.1",
     "request": "^2.69.0",
+    "underscore": "^1.8.3",
     "uuid": "^2.0.1"
   },
   "devDependencies": {},
   "scripts": {
     "start": "./node_modules/.bin/nodemon --ignore node_modules --ignore server/db/db.js server/server.js",
     "test": "./node_modules/.bin/mocha --bail server/db/dbTests.js"
+  },
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
   },
   "repository": {
     "type": "git",

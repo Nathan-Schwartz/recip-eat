@@ -3,6 +3,7 @@ var path         = require('path');
 var bodyParser   = require('body-parser');
 var passport     = require('passport');
 var session      = require('express-session');
+var browserify   = require('browserify-middleware'); //new
 
 var API    = require('./models/externalAPI');
 var recipe = require('./models/recipe');
@@ -10,7 +11,8 @@ var recipe = require('./models/recipe');
 
 var app = express();
 
-app.use( express.static( path.join(__dirname + '/..') + '/client/public'));
+app.use( "/main.js", browserify('./client/js/main.js', { transform: ["reactify"] } )) //new
+app.use( express.static( path.join(__dirname + '/..') + '/client/'));
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
 
@@ -61,7 +63,7 @@ app.get('/user/favourites', function(req, res) {
 
 
 app.get('/', function(req,res){
-  res.status(200).send() 
+  res.status(200).send()
 });
 
 app.post('/searchRecipePuppy', function(req, res) {
