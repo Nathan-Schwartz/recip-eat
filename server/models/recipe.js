@@ -20,7 +20,7 @@ recipeHelpers.addToList = function(user, id){
 recipeHelpers.getList = function(user){
 
   var userRecipes;
-  var fullRecipeData = [];
+  var usersJSONRecipes = [];
 
   return db.findById({}, user)
   .then(function(thisUser){
@@ -29,10 +29,10 @@ recipeHelpers.getList = function(user){
   })
   .then(function(allTheRecipes){
     for(var i=0, length=allTheRecipes.length; i<length; i++) {
-      if(userRecipes.indexOf( allTheRecipes[i].id )  !== -1) {
-        fullRecipeData.push( allTheRecipes[i] );
+      if(userRecipes.indexOf( String(allTheRecipes[i].id) )  !== -1) {
+        usersJSONRecipes.push( allTheRecipes[i] );
       }
     }
-    return fullRecipeData;
+    return usersJSONRecipes;
   })
 };

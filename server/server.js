@@ -3,44 +3,49 @@ var path         = require('path');
 var bodyParser   = require('body-parser');
 var passport     = require('passport');
 var session      = require('express-session');
-var browserify   = require('browserify-middleware');
+var cors         = require('cors');
+var cookieParser = require('cookie-parser')
 
-var API    = require('./models/externalAPI');
-var recipe = require('./models/recipe');
-
+var API      = require('./models/externalAPI');
+var recipe   = require('./models/recipe');
+var configMW = require('./passport');
 
 var app = express();
 
-//app.use( browserify('./client/dist/bundle.js'));
-app.use( express.static( path.join(__dirname,'../client')));
-
+app.use( cookieParser() );
+app.use( cors() );
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({ extended: true }) );
-
-var configureMiddleware = require('./passport')(app,express);
-
-app.get('/bundle', function(){
-  res.status(200).send();
-});
+configMW(app,express);
 
 app.get('/login', passport.authenticate('github', { scope: [ 'user:email' ] }));
 
 app.get('/logout', function(req, res){
   req.session.destroy();
   req.logout();
+  res.clearCookie('userId')
   res.status(302).redirect('https://github.com/logout');
 });
 
-app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' }));
+app.get('/auth/callback', passport.authenticate('github', { failureRedirect: '/login'}), function(req,res){
+  if(!req.session || !req.session.passport || !req.session.passport.user){
+    console.log("Passport or user session not instantiated");
+    res.redirect('/login');
+  } else {
+    res.cookie("userId" , String(req.session.passport.user));
+    res.redirect("http://localhost:8889");
+  }
+});
 
 app.post('/user/addfavourite', function(req, res) {
-
-  if(!req.session || !req.session.passport || !req.session.passport.user || !req.body || !req.body.recipeId){
+ //!req.session || !req.session.passport || !req.session.passport.user ||
+ if(!req.body || !req.body.recipeId || !req.body.userId){
+    console.log("Bad things happened", req.body, req.session, req.query, req.cookies);
     res.status(403).send();
-    throw new Error("Bad things happened because we didn't get a user id or body from the session.");
+   // throw new Error("Bad things happened because we didn't get a user id or body from the session.");
   }
 
-  recipe.addToList(req.session.passport.user, req.body.recipeId)
+  recipe.addToList(req.body.userId, req.body.recipeId)
   .then(function(){
     res.status(201).send();
   })
@@ -51,12 +56,14 @@ app.post('/user/addfavourite', function(req, res) {
 });
 
 app.get('/user/favourites', function(req, res) {
-  if(!req.session || !req.session.passport || !req.session.passport.user){
+
+  if(!req.query || !req.query.userId){
+    console.log("Bad things happened because we didn't get a user id or query from the session.");
     res.status(403).send();
-    throw new Error("Bad things happened because we didn't get a user id or body from the session.");
+    //throw new Error("Bad things happened because we didn't get a user id or query from the session.");
   }
 
-  recipe.getList(req.session.passport.user)
+  recipe.getList(req.query.userId)
   .then(function(fullRecipeData){
     res.status(200).send(JSON.stringify(fullRecipeData));
   })

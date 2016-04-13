@@ -64,7 +64,11 @@ recipes.searchFood2Fork = function(options, ingredients){
 
   return sendRequest(1)
   .then(function(body){
-    return JSON.parse(body);
+    return JSON.parse(body).recipes;
+  })
+  .then(function(recipes){
+    //give each entry an id
+    return addId(recipes);
   })
   .catch(function(error){
     console.log("The page request went poorly in searchFood2Fork =>", error);
@@ -91,7 +95,7 @@ function byThumbNail(current) {
   return current.thumbnail.length > 0;
 }
 
-function addId(recipeArr) { 
+function addId(recipeArr) {
 
   return db.findById({}, "_RECIPE_ID_COUNTER")
   .then(function(RecCounter){
